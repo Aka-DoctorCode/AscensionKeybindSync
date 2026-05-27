@@ -1,0 +1,12 @@
+## Interface: 110002
+## Title: Ascension Mount Manager
+## Notes: Smart mount summoning, prioritizing flying, aquatic, and ground mounts based on environment, with service mount right-click integration.
+## Author: Aka-DoctorCode
+## Category: Mounts
+## Version: 1.0.0
+## SavedVariables: AscensionMountManagerDB
+## IconTexture: Interface\AddOns\AscensionMountManager\Media\Icon.png
+## X-Curse-Project-ID: 0000000
+## X-Wago-ID: 0000000
+
+AscensionMountManager.lua

@@ -1,0 +1,15 @@
+package-as: AscensionMountManager
+license-output: LICENSE
+enable-nolib-creation: no
+ignore:
+    .github
+    .gitattributes
+    .gitignore
+    .pkgmeta
+    .DS_Store
+    __MACOSX
+    CHANGELOG.txt
+    README.md
+manual-changelog: 
+    filename: CHANGELOG.txt
+    markup-type: html
