@@ -41,12 +41,16 @@ local eventFrame = CreateFrame("Frame")
 
 -- Returns true if the player is fully submerged (not just swimming at surface)
 local function isPlayerUnderwater()
-    if not IsSubmerged or not IsSubmerged() then return false end
-    -- IsSwimming at surface + flyable area means the player can still fly up
-    if IsSwimming and IsSwimming() and IsFlyableArea and IsFlyableArea() then
-        return false
+    if IsSubmerged and IsSubmerged() then
+        return true
     end
-    return true
+    if IsSwimming and IsSwimming() then
+        if IsFlyableArea and IsFlyableArea() then
+            return false
+        end
+        return true
+    end
+    return false
 end
 
 function addonTable.ascensionMountManager:buildFavoritesCache()
@@ -97,10 +101,10 @@ function addonTable.ascensionMountManager:buildPriorityPool()
     local canFly     = IsFlyableArea and IsFlyableArea()
     local underwater = isPlayerUnderwater()
 
-    if canFly and #flyingPool > 0 then
-        return flyingPool
-    elseif underwater and #aquaticPool > 0 then
+    if underwater and #aquaticPool > 0 then
         return aquaticPool
+    elseif canFly and #flyingPool > 0 then
+        return flyingPool
     elseif #groundPool > 0 then
         return groundPool
     end
@@ -142,6 +146,10 @@ function addonTable.ascensionMountManager:summonMount()
         candidate      = pool[candidateIndex]
     end
 
+    if GetShapeshiftForm and GetShapeshiftForm() > 0 then
+        CancelShapeshiftForm()
+    end
+
     C_MountJournal.SummonByID(candidate.id)
 
     table.insert(self.recentSummonHistory, 1, candidate.modelId)
@@ -164,6 +172,8 @@ function addonTable.ascensionMountManager:ensureMacroExists()
     local macroIndex = GetMacroIndexByName("AscensionMount")
     if macroIndex == 0 then
         macroIndex = self:createAscensionMacro()
+    else
+        EditMacro(macroIndex, "AscensionMount", "ability_mount_ridinghorse", "/ascensionmount")
     end
     return macroIndex
 end
@@ -208,8 +218,22 @@ function addonTable.ascensionMountManager:integrateUi()
     if not MountJournal then return end
 
     local uiButton = CreateFrame("Button", "AscensionMountUiButton", MountJournal, "BackdropTemplate")
-    uiButton:SetSize(48, 48)
-    uiButton:SetPoint("BOTTOMRIGHT", MountJournal, "TOPLEFT", -8, -40)
+    
+    local oldBtn = MountJournal.SummonRandomFavoriteButton
+    if oldBtn then
+        uiButton:SetParent(oldBtn:GetParent())
+        uiButton:SetSize(oldBtn:GetSize())
+        uiButton:SetPoint("CENTER", oldBtn, "CENTER", 0, 0)
+        
+        oldBtn:SetAlpha(0)
+        oldBtn:EnableMouse(false)
+        oldBtn:UnregisterAllEvents()
+        hooksecurefunc(oldBtn, "SetAlpha", function(self, alpha) if alpha > 0 then self:SetAlpha(0) end end)
+    else
+        uiButton:SetSize(48, 48)
+        uiButton:SetPoint("BOTTOMRIGHT", MountJournal, "TOPLEFT", -8, -50)
+    end
+    
     uiButton:SetFrameStrata("HIGH")
     uiButton:SetFrameLevel(99)
     uiButton:EnableMouse(true)
@@ -222,7 +246,7 @@ function addonTable.ascensionMountManager:integrateUi()
     uiButton:SetNormalTexture("Interface\\AddOns\\AscensionMountManager\\Media\\Icon.png")
     local normalTex = uiButton:GetNormalTexture()
     if normalTex then
-        normalTex:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+        normalTex:SetTexCoord(0.10, 0.90, 0.10, 0.90)
     end
 
     uiButton:RegisterForDrag("LeftButton")
