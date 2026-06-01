@@ -19,6 +19,8 @@ If you wish to summon a mount via macro, type in chat: **`/ascensionmount`**.
 ### **AMM** Key Features
 
 * It automatically detects if you are in a flyable area, underwater, or restricted to ground, and picks a suitable mount from your favorites.
+* Automatically cancels shapeshift forms to summon mount.
+* Allows summoning flying mounts while swimming at the water surface in flyable zones.
 * Access its own contextual menu by `Right Clicking` the main frame button in your Mount Journal, which gives access to service mounts (Repair Mammoths/Yaks, Auction House Brutosaurs).
 * You can drag the button directly to your action bars to bind the smart summoner.
 
@@ -41,6 +43,8 @@ Si deseas invocar una montura mediante un macro, escribe en el chat: **`/ascensi
 #### Características principales de **AMM**
 
 * Detecta automáticamente si estás en un área de vuelo, bajo el agua o restringido a tierra, y elige una montura adecuada de tus favoritas.
+* Cancela automáticamente formas de druida u otras transformaciones al invocar.
+* Permite invocar monturas voladoras al nadar en la superficie del agua en zonas de vuelo.
 * Accede a su propio menú contextual haciendo **clic derecho** en el botón del marco principal en tu Diario de Monturas, lo que te da acceso a monturas de servicio (Mamuts/Yaks de reparación, Brutosaurios de Casa de Subastas).
 * Puedes arrastrar el botón directamente a tus barras de acción para enlazar el invocador inteligente.
 

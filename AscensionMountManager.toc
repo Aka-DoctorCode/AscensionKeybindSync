@@ -3,7 +3,7 @@
 ## Notes: Smart mount summoning, prioritizing flying, aquatic, and ground mounts based on environment, with service mount right-click integration.
 ## Author: Aka-DoctorCode
 ## Category: Mounts
-## Version: @project-version@
+## Version: V01
 ## SavedVariables: AscensionMountManagerDB
 ## IconTexture: Interface\AddOns\AscensionMountManager\Media\AkaDoctorCode.png
 ## X-Curse-Project-ID: 1554964

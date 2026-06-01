@@ -1,10 +1,9 @@
-<h1>@project-version@</h1>
+<h1>V02</h1>
 <br>
-<h2>NEW ADDON: Ascension Mount Manager!</h2>
+<h2>Mount Manager Updates</h2>
 <ul>
-    <li><b>Smart mount summoning logic</b> prioritizes flying/aquatic/ground based on player state.</li>
-    <li><b>Service mounts context menu</b> (Right-click) natively integrates with the Mount Journal.</li>
-    <li><b>Action bar support</b> drag the button to create a macro that supports right-clicking for the menu.</li>
+    <li><b>Water Surface Summoning:</b> Summon flying mounts directly while swimming at the surface in flyable areas.</li>
+    <li><b>Shapeshift Auto-Cancel:</b> Automatically drops shapeshift forms to allow immediate mounting.</li>
 </ul>
 <br>
 <h2>Positive feedback is always appreciated, it helps me to continue working on this project</h2>
