@@ -1,3 +1,10 @@
+-------------------------------------------------------------------------------
+-- Project: AscensionMountManager
+-- Author: Aka-DoctorCode
+-- File: AscensionMountManager.lua
+-------------------------------------------------------------------------------
+---@diagnostic disable: undefined-global, undefined-field, inject-field
+
 local addonName, addonTable = ...
 
 -- Flying types: includes classic flying + all skyriding (402, 424, 436 unified since 11.0)
