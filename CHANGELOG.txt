@@ -1,9 +1,8 @@
-<h1>V02</h1>
+<h1>V01</h1>
 <br>
-<h2>Mount Manager Updates</h2>
+<h2>Keybind Sync Updates</h2>
 <ul>
-    <li><b>Water Surface Summoning:</b> Summon flying mounts directly while swimming at the surface in flyable areas.</li>
-    <li><b>Shapeshift Auto-Cancel:</b> Automatically drops shapeshift forms to allow immediate mounting.</li>
+    <li>Initial Release: Keybind Sync functionality for WoW Retail 12.0.7.</li>
 </ul>
 <br>
 <h2>Positive feedback is always appreciated, it helps me to continue working on this project</h2>

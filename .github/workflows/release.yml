@@ -34,5 +34,5 @@ jobs:
           gh api repos/Aka-DoctorCode/AscensionSuit/dispatches \
             --method POST \
             -f event_type="update-suite" \
-            -F client_payload[trigger]="AscensionMountManager" \
+            -F client_payload[trigger]="AscensionKeybindSync" \
             -F client_payload[version]="${{ github.ref_name }}"

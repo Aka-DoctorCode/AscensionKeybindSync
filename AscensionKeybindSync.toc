@@ -1,0 +1,12 @@
+## Interface: 120005
+## Title: Ascension Keybind Sync
+## Notes: Sync action bars based on Class and Specialization.
+## Author: Aka-DoctorCode
+## Version: 1
+## SavedVariables: AscensionKeybindSyncDB
+## RequiredDeps: AscensionSuit
+## IconTexture: Interface\AddOns\AscensionKeybindSync\Media\AkaDoctorCode.png
+Core/Util.lua
+Core/ProfileManager.lua
+Config/UI.lua
+Core/Core.lua
