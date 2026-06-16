@@ -6,6 +6,9 @@
 ## SavedVariables: AscensionKeybindSyncDB
 ## RequiredDeps: AscensionSuit
 ## IconTexture: Interface\AddOns\AscensionKeybindSync\Media\AkaDoctorCode.png
+## X-Curse-Project-ID: 1554964
+## X-Wago-ID: L6J9pRNv
+
 Core/Util.lua
 Core/ProfileManager.lua
 Config/UI.lua
