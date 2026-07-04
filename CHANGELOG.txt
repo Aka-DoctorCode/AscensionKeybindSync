@@ -1,8 +1,8 @@
-<h1>V01</h1>
-<br>
-<h2>Keybind Sync Updates</h2>
+<h1>@project-version@</h1>
 <ul>
-    <li>Initial Release: Keybind Sync functionality for WoW Retail 12.0.7.</li>
+    <li>License Update</li>
+    <li>Readme Updated</li>
+    <li>TOC file updated</li>
 </ul>
 <br>
 <h2>Positive feedback is always appreciated, it helps me to continue working on this project</h2>

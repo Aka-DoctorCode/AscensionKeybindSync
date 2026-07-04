@@ -2,7 +2,7 @@
 ## Title: Ascension Keybind Sync
 ## Notes: Sync action bars based on Class and Specialization.
 ## Author: Aka-DoctorCode
-## Version: 1
+## Version: @project-version@
 ## SavedVariables: AscensionKeybindSyncDB
 ## RequiredDeps: AscensionSuit
 ## IconTexture: Interface\AddOns\AscensionKeybindSync\Media\AkaDoctorCode.png

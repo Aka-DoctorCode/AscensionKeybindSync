@@ -1,3 +1,5 @@
+[![Discord](https://img.shields.io/badge/Discord-Join_Community-5865F2?style=for-the-badge&logo=discord&logoColor=5865F2)](https://discord.gg/GaYzvYr7F) ![CurseForge Downloads](https://img.shields.io/curseforge/dt/1554964?style=for-the-badge&color=4900C2) ![CurseForge Version](https://img.shields.io/curseforge/v/1554964?style=for-the-badge&color=4900C2) ![CurseForge Game Versions](https://img.shields.io/curseforge/game-versions/1554964?style=for-the-badge&color=4900C2) [![](https://img.shields.io/badge/Donate-F0B90B?style=for-the-badge)](https://aka-doctorcode.github.io/DonationAddresses/)
+
 # **Ascension Keybind Sync**
 
 ***
@@ -6,17 +8,18 @@
 
 ## Key Features
 
-* **Automatic Synchronization:** Seamlessly syncs keybindings, layouts, and standard macros across different characters sharing the same class and specialization.
-* **Profile Management:** Easily create, save, and load custom keybinding profiles to fit different playstyles or needs.
-* **Multi Spec Support:** Automatically detects spec changes and updates bindings accordingly.
+*   **Automatic Synchronization:** Seamlessly syncs keybindings, layouts, and standard macros across different characters sharing the same class and specialization.
+*   **Profile Management:** Easily create, save, and load custom keybinding profiles to fit different playstyles or needs.
+*   **Multi Spec Support:** Automatically detects spec changes and updates bindings accordingly.
 
 ### **Slash Commands:**
-* **`/aks`** - Open the configuration menu.
-* **`/aks save`** - Save the current profile manually.
-* **`/aks load`** - Load the active profile manually.
-* **`/aks delete`** - Delete the active profile.
-* **`/aks status`** - Display the synchronization status and active profile.
-* **`/aks help`** - Show the list of available commands.
+
+*   **`/aks`** - Open the configuration menu.
+*   **`/aks save`** - Save the current profile manually.
+*   **`/aks load`** - Load the active profile manually.
+*   **`/aks delete`** - Delete the active profile.
+*   **`/aks status`** - Display the synchronization status and active profile.
+*   **`/aks help`** - Show the list of available commands.
 
 ***
 
@@ -24,16 +27,17 @@
 
 ### Características Principales
 
-* **Sincronización Automática:** sincroniza sin problemas los atajos de teclado, disposiciones y macros estándar entre diferentes personajes que comparten la misma clase y especialización.
-* **Gestión de Perfiles:** crea, guarda y carga fácilmente perfiles de atajos personalizados para adaptarse a diferentes estilos de juego o especializaciones.
-* **Soporte para Doble Especialización:** detecta automáticamente los cambios de especialización y actualiza las asignaciones en consecuencia.
+*   **Sincronización Automática:** sincroniza sin problemas los atajos de teclado, disposiciones y macros estándar entre diferentes personajes que comparten la misma clase y especialización.
+*   **Gestión de Perfiles:** crea, guarda y carga fácilmente perfiles de atajos personalizados para adaptarse a diferentes estilos de juego o especializaciones.
+*   **Soporte para Doble Especialización:** detecta automáticamente los cambios de especialización y actualiza las asignaciones en consecuencia.
 
 ### **Comandos de Barra:**
-* **`/aks`** - Abre el menú de configuración.
-* **`/aks save`** - Guarda el perfil actual manualmente.
-* **`/aks load`** - Carga el perfil activo manualmente.
-* **`/aks delete`** - Elimina el perfil activo.
-* **`/aks status`** - Muestra el estado de la sincronización y el perfil activo.
-* **`/aks help`** - Muestra la lista de comandos disponibles.
+
+*   **`/aks`** - Abre el menú de configuración.
+*   **`/aks save`** - Guarda el perfil actual manualmente.
+*   **`/aks load`** - Carga el perfil activo manualmente.
+*   **`/aks delete`** - Elimina el perfil activo.
+*   **`/aks status`** - Muestra el estado de la sincronización y el perfil activo.
+*   **`/aks help`** - Muestra la lista de comandos disponibles.
 
 ***
