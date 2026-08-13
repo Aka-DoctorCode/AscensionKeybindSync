@@ -498,111 +498,11 @@ function UI:updatePreviewGrid(bindings)
     self.activePreviewButtonsCount = #scanResults
 end
 
-function UI:createProfileListPanel(parentFrame)
-    local addon = self.addon
-    local styles = addon.uiContext.styles
-    
-    local listFrame = CreateFrame("Frame", "AscensionProfilesListPanel", _G.UIParent, "BackdropTemplate")
-    listFrame:SetSize(400, 350)
-    listFrame:SetPoint("TOPLEFT", parentFrame, "TOPRIGHT", 5, 0)
-    listFrame:SetFrameStrata("DIALOG")
-    listFrame:SetClampedToScreen(true)
-    listFrame:SetBackdrop({
-        bgFile = styles.files.bgFile,
-        edgeFile = styles.files.edgeFile,
-        edgeSize = 3,
-        insets = { left = 2, right = 2, top = 2, bottom = 2 }
-    })
-    listFrame:SetBackdropColor(unpack(styles.colors.backgroundDark or styles.colors.mainBackground or {0.02, 0.02, 0.03, 0.95}))
-    listFrame:SetBackdropBorderColor(unpack(styles.colors.primary or {0.3, 0, 0.4, 1}))
-    
-    if LibStub:GetLibrary("AscensionSuit-UI", true).UX then
-        LibStub:GetLibrary("AscensionSuit-UI", true).UX:makeMovable(listFrame)
-        LibStub:GetLibrary("AscensionSuit-UI", true).UX:makeClosableWithEscape(listFrame)
-    end
-    
-    local closeBtn = addon.uiContext:createCloseButton(listFrame, function() listFrame:Hide() end)
-    closeBtn:ClearAllPoints()
-    closeBtn:SetPoint("TOPRIGHT", -8, -8)
-    
-    local title = listFrame:CreateFontString(nil, "OVERLAY", styles and styles.fonts and styles.fonts.header or "GameFontNormalLarge")
-    title:SetPoint("TOP", 0, -16)
-    title:SetText("Saved Profiles")
-    title:SetTextColor(unpack(styles.colors.gold))
-    
-    local scrollFrame = CreateFrame("ScrollFrame", nil, listFrame, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetSize(350, 240)
-    scrollFrame:SetPoint("TOPLEFT", listFrame, "TOPLEFT", 15, -45)
-    
-    local scrollChild = CreateFrame("Frame", nil, scrollFrame)
-    scrollChild:SetSize(350, 240)
-    scrollFrame:SetScrollChild(scrollChild)
-    listFrame.scrollChild = scrollChild
-    
-    local createBtn = addon.uiContext:createButton({
-        parent = listFrame,
-        text = "Create Profile",
-        onClick = function()
-            self:showCreateProfileDialog()
-        end,
-        width = 110,
-        height = 30
-    })
-    createBtn:ClearAllPoints()
-    createBtn:SetPoint("BOTTOMLEFT", listFrame, "BOTTOMLEFT", 20, 15)
-    
-    local importBtn = addon.uiContext:createButton({
-        parent = listFrame,
-        text = "Import Profile",
-        onClick = function()
-            self:showExportImportDialog("import", function(bindings)
-                self:showInputDialog("Import Profile", "Enter name for imported profile:", "Imported Profile", function(profileName)
-                    local classToken, specID = addon:getCurrentClassAndSpec()
-                    local profileID = string.format("profile-%d", GetTime() * 1000)
-                    addon.db.global.profiles[profileID] = {
-                        name = profileName,
-                        classToken = classToken,
-                        specID = specID,
-                        bindings = bindings
-                    }
-                    if not addon.db.global.activeProfiles[classToken] then
-                        addon.db.global.activeProfiles[classToken] = {}
-                    end
-                    addon.db.global.activeProfiles[classToken][specID] = profileID
-                    
-                    self:updateProfileList()
-                    local activeProfile = addon.db.global.profiles[profileID]
-                    self:updatePreviewGrid(activeProfile.bindings)
-                    self:showToast("Profile Imported", "success")
-                    self:updateSaveButtonState()
-                end)
-            end)
-        end,
-        width = 110,
-        height = 30
-    })
-    importBtn:ClearAllPoints()
-    importBtn:SetPoint("BOTTOMLEFT", createBtn, "BOTTOMRIGHT", 10, 0)
-    
-    local closePanelBtn = addon.uiContext:createButton({
-        parent = listFrame,
-        text = "Close Panel",
-        onClick = function() listFrame:Hide() end,
-        width = 110,
-        height = 30
-    })
-    closePanelBtn:ClearAllPoints()
-    closePanelBtn:SetPoint("BOTTOMRIGHT", listFrame, "BOTTOMRIGHT", -20, 15)
-    
-    tinsert(UISpecialFrames, "AscensionProfilesListPanel")
-    self.profileListFrame = listFrame
-end
-
 function UI:updateProfileList()
-    local listFrame = self.profileListFrame
-    if not listFrame or not listFrame:IsShown() then return end
-    
-    local scrollChild = listFrame.scrollChild
+    if not self.configFrame or not self.configFrame.tabbedUI then return end
+    local content = self.configFrame.tabbedUI.panels[2].content
+    if not content or not content:IsVisible() then return end
+    local scrollChild = content
     local addon = self.addon
     local styles = addon.uiContext.styles
     
@@ -657,17 +557,17 @@ function UI:updateProfileList()
                 parent = row,
                 text = "Load",
                 onClick = function() end,
-                width = 50,
+                width = 60,
                 height = 24
             })
             loadBtn:ClearAllPoints()
-            loadBtn:SetPoint("RIGHT", row, "RIGHT", -60, 0)
+            loadBtn:SetPoint("RIGHT", row, "RIGHT", -65, 0)
             row.loadBtn = loadBtn
             
             local menuBtn = CreateFrame("Button", nil, row, "UIPanelButtonTemplate")
-            menuBtn:SetSize(20, 20)
+            menuBtn:SetSize(24, 24)
             menuBtn:ClearAllPoints()
-            menuBtn:SetPoint("RIGHT", row, "RIGHT", -35, 0)
+            menuBtn:SetPoint("RIGHT", row, "RIGHT", -36, 0)
             menuBtn:SetText("⚙")
             row.menuBtn = menuBtn
             
@@ -685,7 +585,7 @@ function UI:updateProfileList()
             scrollChild.rows[idx] = row
         end
         
-        row:SetPoint("TOPLEFT", scrollChild, "TOPLEFT", 0, -(idx - 1) * rowHeight)
+        row:SetPoint("TOPLEFT", scrollChild, "TOPLEFT", 15, -60 - (idx - 1) * rowHeight)
         
         local classColor = _G.RAID_CLASS_COLORS[string.upper(item.data.classToken or "")]
         if classColor then
@@ -781,7 +681,6 @@ function UI:updateProfileList()
                     self:showToast("Profile Duplicated", "success")
                 end }
             }
-            -- Simple menu display inside dialog since standard WoW dropdowns can be complex
             self:showCustomDialog("Options: " .. item.data.name, "Choose action:", {
                 { text = "Rename", onClick = menu[1].func },
                 { text = "Duplicate", onClick = menu[2].func },
@@ -793,7 +692,7 @@ function UI:updateProfileList()
         row:Show()
     end
     
-    scrollChild:SetHeight(#profilesList * rowHeight)
+    scrollChild:SetHeight(60 + #profilesList * rowHeight)
 end
 
 function UI:showRenameDialog(profileID)
@@ -854,54 +753,48 @@ function UI:openConfigMenu()
     if self.configFrame then
         self.configFrame:Show()
         self:updateSaveButtonState()
-        if self.profileListFrame then
-            self:updateProfileList()
-        end
+        self:updateProfileList()
+        self:updateIgnoreList()
         return
     end
 
-    local frame = CreateFrame("Frame", "AscensionProfilesConfigFrame", _G.UIParent, "BackdropTemplate")
-    frame:SetSize(350, 300)
-    frame:SetPoint("CENTER")
-    frame:SetFrameStrata("DIALOG")
-    frame:SetClampedToScreen(true)
-    
-    local styles = uiContext.styles
-    frame:SetBackdrop({
-        bgFile = styles.files.bgFile,
-        edgeFile = styles.files.edgeFile,
-        edgeSize = 3,
-        insets = { left = 2, right = 2, top = 2, bottom = 2 }
+    self.configFrame = uiContext:createMainFrame({
+        name = "AscensionProfilesConfigFrame",
+        title = "Ascension Keybind Sync",
+        width = 650,
+        height = 450,
+        tabNames = { "General", "Profiles", "Ignored" },
+        tabFuncs = {
+            function(panel) self:buildGeneralTab(panel) end,
+            function(panel) self:buildProfilesTab(panel) end,
+            function(panel) self:buildIgnoredTab(panel) end,
+        }
     })
-    frame:SetBackdropColor(unpack(styles.colors.backgroundDark or styles.colors.mainBackground or {0.02, 0.02, 0.03, 0.95}))
-    frame:SetBackdropBorderColor(unpack(styles.colors.primary or {0.3, 0, 0.4, 1}))
     
-    if suitUI.UX then
-        suitUI.UX:makeMovable(frame)
-        suitUI.UX:makeClosableWithEscape(frame)
-    end
-    
-    local closeBtn = uiContext:createCloseButton(frame, function() frame:Hide() end)
-    closeBtn:ClearAllPoints()
-    closeBtn:SetPoint("TOPRIGHT", -8, -8)
-    
-    local title = frame:CreateFontString(nil, "OVERLAY", styles and styles.fonts and styles.fonts.header or "GameFontNormalLarge")
-    title:SetPoint("TOP", 0, -16)
-    title:SetText("Keybind Profiles")
-    title:SetTextColor(unpack(styles.colors.gold))
+    self.configFrame:Show()
+end
+
+function UI:buildGeneralTab(panel)
+    if panel.isBuilt then return end
+    panel.isBuilt = true
+    local addon = self.addon
+    local uiContext = addon.uiContext
+    local content = panel.content
     
     local autoSyncCb = uiContext:createCheckbox({
-        parent = frame,
+        parent = content,
         text = "Enable Auto-Sync",
         tooltip = "Automatically saves and loads profiles on changes and spec swaps.",
         getter = function() return addon.db.global.enableAutoSync end,
         setter = function(val) addon.db.global.enableAutoSync = val end
     })
-    autoSyncCb:ClearAllPoints()
-    autoSyncCb:SetPoint("TOP", title, "BOTTOM", -65, -8)
+    autoSyncCb:SetPoint("TOPLEFT", content, "TOPLEFT", 15, -15)
     
-    local activeProfileLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    activeProfileLabel:SetPoint("TOP", frame, "TOP", 0, -82)
+    local activeProfileLabel = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    activeProfileLabel:SetJustifyH("LEFT")
+    activeProfileLabel:SetPoint("TOPLEFT", autoSyncCb, "BOTTOMLEFT", 0, -20)
+    
+    self.configFrame.activeProfileLabel = activeProfileLabel
     
     local function updateLabel()
         local currentClass, currentClassToken = UnitClass("player")
@@ -928,64 +821,133 @@ function UI:openConfigMenu()
         self:updateSaveButtonState()
     end
     
-    frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-    frame:SetScript("OnEvent", updateLabel)
+    self.configFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+    self.configFrame:SetScript("OnEvent", updateLabel)
     
     local saveBtn = uiContext:createButton({
-        parent = frame,
+        parent = content,
         text = "Save Profile",
         onClick = function()
             addon:saveProfileManually()
             updateLabel()
         end,
-        width = 100,
+        width = 120,
         height = 28
     })
-    saveBtn:ClearAllPoints()
-    saveBtn:SetPoint("TOPLEFT", frame, "TOPLEFT", 15, -145)
-    frame.saveBtn = saveBtn
+    saveBtn:SetPoint("TOPLEFT", autoSyncCb, "BOTTOMLEFT", 0, -80)
+    self.configFrame.saveBtn = saveBtn
     
     local loadBtn = uiContext:createButton({
-        parent = frame,
+        parent = content,
         text = "Load Profile",
         onClick = function()
             addon:loadProfileManually()
             updateLabel()
         end,
-        width = 100,
+        width = 130,
         height = 28
     })
-    loadBtn:ClearAllPoints()
-    loadBtn:SetPoint("TOP", saveBtn, "TOP", 0, 0)
     loadBtn:SetPoint("LEFT", saveBtn, "RIGHT", 10, 0)
     
-    local manageBtn = uiContext:createButton({
-        parent = frame,
-        text = "Profiles",
-        onClick = function()
-            if not self.profileListFrame then
-                self:createProfileListPanel(frame)
-            end
-            if self.profileListFrame:IsShown() then
-                self.profileListFrame:Hide()
-            else
-                self:updateProfileList()
-                self.profileListFrame:Show()
-            end
-        end,
-        width = 100,
-        height = 28
-    })
-    manageBtn:ClearAllPoints()
-    manageBtn:SetPoint("TOP", loadBtn, "TOP", 0, 0)
-    manageBtn:SetPoint("LEFT", loadBtn, "RIGHT", 10, 0)
+    self.previewContainerParent = content
+    self:createPreviewGrid(self.previewContainerParent)
+    content.previewContainer:ClearAllPoints()
+    content.previewContainer:SetPoint("TOPLEFT", saveBtn, "BOTTOMLEFT", 0, -30)
+    self.configFrame.previewContainer = content.previewContainer
     
-    self.configFrame = frame
-    
-    self:createPreviewGrid(frame)
     updateLabel()
+end
+
+function UI:buildProfilesTab(panel)
+    if panel.isBuilt then
+        self:updateProfileList()
+        return
+    end
+    panel.isBuilt = true
+    local addon = self.addon
+    local uiContext = addon.uiContext
+    local content = panel.content
     
-    frame:Show()
+    local createBtn = uiContext:createButton({
+        parent = content,
+        text = "Create Profile",
+        onClick = function()
+            self:showCreateProfileDialog()
+        end,
+        width = 140,
+        height = 30
+    })
+    createBtn:SetPoint("TOPLEFT", content, "TOPLEFT", 15, -15)
+    
+    local importBtn = uiContext:createButton({
+        parent = content,
+        text = "Import Profile",
+        onClick = function()
+            self:showExportImportDialog("import", function(bindings)
+                self:showInputDialog("Import Profile", "Enter name for imported profile:", "Imported Profile", function(profileName)
+                    local classToken, specID = addon:getCurrentClassAndSpec()
+                    local profileID = string.format("profile-%d", GetTime() * 1000)
+                    addon.db.global.profiles[profileID] = {
+                        name = profileName,
+                        classToken = classToken,
+                        specID = specID,
+                        bindings = bindings
+                    }
+                    if not addon.db.global.activeProfiles[classToken] then
+                        addon.db.global.activeProfiles[classToken] = {}
+                    end
+                    addon.db.global.activeProfiles[classToken][specID] = profileID
+                    
+                    self:updateProfileList()
+                    local activeProfile = addon.db.global.profiles[profileID]
+                    self:updatePreviewGrid(activeProfile.bindings)
+                    self:showToast("Profile Imported", "success")
+                    self:updateSaveButtonState()
+                end)
+            end)
+        end,
+        width = 140,
+        height = 30
+    })
+    importBtn:SetPoint("LEFT", createBtn, "RIGHT", 10, 0)
+    
+    self:updateProfileList()
+end
+
+function UI:buildIgnoredTab(panel)
+    if panel.isBuilt then
+        self:updateIgnoreList()
+        return
+    end
+    panel.isBuilt = true
+    local addon = self.addon
+    local uiContext = addon.uiContext
+    local content = panel.content
+    
+    local subtitle = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    subtitle:SetPoint("TOPLEFT", content, "TOPLEFT", 15, -15)
+    subtitle:SetText("These spells won't be saved or cleared by Auto-Sync.")
+    
+    local addBtn = uiContext:createButton({
+        parent = content,
+        text = "Add Ability (ID or Name)",
+        onClick = function()
+            self:showInputDialog("Add Ignored Ability", "Enter Spell ID or Name:", "", function(input)
+                local id = tonumber(input)
+                if id then
+                    addon.db.global.ignoredAbilities[id] = true
+                else
+                    addon.db.global.ignoredAbilities[input] = true
+                end
+                self:updateIgnoreList()
+            end)
+        end,
+        width = 200,
+        height = 30
+    })
+    addBtn:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -10)
+    
+    self:updateIgnoreList()
 end
 
 function UI:updateSaveButtonState()
@@ -1163,7 +1125,7 @@ function UI:showMacroConflictDialog(newMacros, conflicts, onApply, onCancel)
     
     local function getMacroPreview(body)
         if not body then return "" end
-        for line in string.gmatch(body, "[^\r\n]+") do
+        for line in string.gmatch(body, "[^\r\\n]+") do
             if string.find(line, "^/cast") or string.find(line, "^/use") then
                 if #line > 30 then
                     return string.sub(line, 1, 30) .. "..."
@@ -1172,7 +1134,7 @@ function UI:showMacroConflictDialog(newMacros, conflicts, onApply, onCancel)
                 end
             end
         end
-        local firstLine = string.match(body, "[^\r\n]+") or ""
+        local firstLine = string.match(body, "[^\r\\n]+") or ""
         if #firstLine > 30 then
             return string.sub(firstLine, 1, 30) .. "..."
         else
@@ -1466,6 +1428,105 @@ function UI:registerOptionsUI()
             self:openConfigMenu()
         end
     end
+end
+
+function UI:updateIgnoreList()
+    if not self.configFrame or not self.configFrame.tabbedUI then return end
+    local content = self.configFrame.tabbedUI.panels[3].content
+    if not content or not content:IsVisible() then return end
+    local scrollChild = content
+    local addon = self.addon
+    local styles = addon.uiContext.styles
+    
+    if not scrollChild.rows then
+        scrollChild.rows = {}
+    end
+    
+    for _, row in ipairs(scrollChild.rows) do
+        row:Hide()
+    end
+    
+    local items = {}
+    for key, _ in pairs(addon.db.global.ignoredAbilities) do
+        table.insert(items, key)
+    end
+    table.sort(items, function(a, b) return tostring(a) < tostring(b) end)
+    
+    local rowHeight = 36
+    for idx, key in ipairs(items) do
+        local row = scrollChild.rows[idx]
+        if not row then
+            row = CreateFrame("Frame", nil, scrollChild, "BackdropTemplate")
+            row:SetSize(340, 32)
+            row:SetBackdrop({
+                bgFile = styles.files.bgFile,
+                edgeFile = styles.files.edgeFile,
+                edgeSize = 1,
+                insets = { left = 1, right = 1, top = 1, bottom = 1 }
+            })
+            row:SetBackdropColor(0.05, 0.05, 0.07, 0.8)
+            row:SetBackdropBorderColor(0.15, 0.15, 0.18, 0.6)
+            
+            local iconTex = row:CreateTexture(nil, "ARTWORK")
+            iconTex:SetSize(24, 24)
+            iconTex:SetPoint("LEFT", row, "LEFT", 4, 0)
+            row.iconTex = iconTex
+            
+            local nameText = row:CreateFontString(nil, "OVERLAY")
+            nameText:SetFontObject("GameFontNormal")
+            nameText:SetPoint("LEFT", iconTex, "RIGHT", 8, 0)
+            nameText:SetWidth(240)
+            nameText:SetJustifyH("LEFT")
+            row.nameText = nameText
+            
+            local deleteBtn = addon.uiContext:createButton({
+                parent = row,
+                text = "X",
+                onClick = function() end,
+                width = 24,
+                height = 24
+            })
+            deleteBtn:ClearAllPoints()
+            deleteBtn:SetPoint("RIGHT", row, "RIGHT", -6, 0)
+            row.deleteBtn = deleteBtn
+            
+            scrollChild.rows[idx] = row
+        end
+        
+        row:SetPoint("TOPLEFT", scrollChild, "TOPLEFT", 15, -85 - (idx - 1) * rowHeight)
+        
+        local displayName = tostring(key)
+        local icon = nil
+        
+        if type(key) == "number" then
+            local spellInfo = C_Spell.GetSpellInfo(key)
+            if spellInfo and spellInfo.name then
+                displayName = spellInfo.name .. " (" .. key .. ")"
+            else
+                displayName = "Spell ID: " .. key
+            end
+            icon = C_Spell.GetSpellTexture(key)
+        else
+            displayName = key
+        end
+        
+        if icon then
+            row.iconTex:SetTexture(icon)
+        else
+            row.iconTex:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
+        end
+        
+        row.nameText:SetText(displayName)
+        
+        row.deleteBtn:SetScript("OnClick", function()
+            addon.db.global.ignoredAbilities[key] = nil
+            self:updateIgnoreList()
+        end)
+        
+        row:Show()
+    end
+    
+    scrollChild:SetHeight(85 + #items * rowHeight)
 end
 
 addonTable.UI = UI

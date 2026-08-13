@@ -18,12 +18,33 @@ function ProfileManager:new(addonInstance)
     return instance
 end
 
+function ProfileManager:isAbilityIgnored(actionType, id)
+    if actionType ~= "spell" then return false end
+    local ignored = self.addon.db.global.ignoredAbilities
+    if not ignored then return false end
+    
+    if id and ignored[tonumber(id)] then return true end
+    
+    local spellInfo = id and C_Spell.GetSpellInfo(id)
+    if spellInfo and spellInfo.name and ignored[spellInfo.name] then
+        return true
+    end
+    
+    return false
+end
+
 function ProfileManager:getCurrentBindings()
     local bindings = {}
     for i = 1, 180 do
         local actionType, id, subType = GetActionInfo(i)
         local bindingPrefix, buttonIndex = Util.getBindingPrefixForSlot(i)
         local key1, key2 = GetBindingKey(bindingPrefix .. buttonIndex)
+        
+        if self:isAbilityIgnored(actionType, id) then
+            actionType = nil
+            id = nil
+            subType = nil
+        end
         
         local name, icon, macroData
         if actionType == "spell" then
@@ -47,6 +68,7 @@ function ProfileManager:getCurrentBindings()
                 if findBaseSpell then
                     targetSpellID = findBaseSpell(id) or id
                 end
+                id = targetSpellID
             end
             local spellInfo = C_Spell.GetSpellInfo(targetSpellID)
             if spellInfo then
@@ -114,8 +136,11 @@ end
 
 function ProfileManager:clearActionBars()
     for i = 1, 180 do
-        PickupAction(i)
-        ClearCursor()
+        local actionType, id = GetActionInfo(i)
+        if not self:isAbilityIgnored(actionType, id) then
+            PickupAction(i)
+            ClearCursor()
+        end
     end
 end
 

@@ -25,6 +25,7 @@ function addon:OnInitialize()
             profiles = {},
             activeProfiles = {},
             enableAutoSync = true,
+            ignoredAbilities = {},
         }
     }
     self.db = AceDB:New("AscensionKeybindSyncDB", defaults)
