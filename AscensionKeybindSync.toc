@@ -1,4 +1,4 @@
-## Interface: 120007
+## Interface: 120100
 ## Title: Ascension Keybind Sync
 ## Notes: Sync action bars based on Class and Specialization.
 ## Author: Aka-DoctorCode
